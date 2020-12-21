@@ -1,59 +1,43 @@
 // https://adventofcode.com/2020/day/18?fbclid=IwAR0gGFZPJDCon8LISoaBVn1t-lQ6RiN8P9GmPr4OHqCeHDdwLc6CF4gFXZk
 
+@SuppressWarnings("SpellCheckingInspection")
 class Calculator {
+    private static final char NOOP = 0;
+    private static final long NOVALUE = Long.MIN_VALUE;
     private final char[] expr;
-
-    public long calc() {
-        return calc(0, expr.length - 1);
-
-    }
 
     public Calculator(char[] expr) {
         this.expr = expr;
     }
 
-    public long calc(int firstIdx, int lastIdx) {
-        if ('(' == expr[firstIdx]) {
-            int innerLastIdx = -1 + findMatchingCloseBracketIdx(firstIdx + 1, lastIdx);
-            long currValue = calc(firstIdx + 1, innerLastIdx);
-            if (innerLastIdx == lastIdx - 1) {
-                return currValue;
-            }
-            char op = expr[innerLastIdx + 2];
-            return calc(currValue, op, innerLastIdx + 3, lastIdx);
-        } else {
-            int newFirstIdx = findNextFirstIdx(firstIdx, lastIdx);
-            String numStr = new String(expr, firstIdx, newFirstIdx - firstIdx);
-            long currValue = Long.parseLong(numStr);
-            if (newFirstIdx == 1 + lastIdx) {
-                return currValue;
-            }
-            char op = expr[newFirstIdx];
-            return calc(currValue, op, newFirstIdx + 1, lastIdx);
-        }
+    public long calc() {
+        return calc(NOVALUE, NOOP, 0, expr.length - 1);
+
     }
 
-    private long calc(long currValue, char op, int firstIdx, int lastIdx) {
+    private long calc(long prevValue, char op, int firstIdx, int lastIdx) {
         if ('(' == expr[firstIdx]) {
             int innerLastIdx = -1 + findMatchingCloseBracketIdx(firstIdx + 1, lastIdx);
-            long newCurrValue = applyOp(op, currValue, calc(firstIdx + 1, innerLastIdx));
+            long currValue = calc(NOVALUE, NOOP, firstIdx + 1, innerLastIdx);
+            long newCurrValue = applyOp(op, currValue, prevValue);
             if (innerLastIdx == lastIdx - 1) {
                 return newCurrValue;
             }
             char newOp = expr[innerLastIdx + 2];
             return calc(newCurrValue, newOp, innerLastIdx + 3, lastIdx);
         } else {
-            int newFirstIdx = findNextFirstIdx(firstIdx, lastIdx);
-            currValue = applyOp(op, currValue, Long.parseLong(new String(expr, firstIdx, newFirstIdx - firstIdx)));
+            int newFirstIdx = findNextNonDigitIdx(firstIdx, lastIdx);
+            long currValue = Long.parseLong(new String(expr, firstIdx, newFirstIdx - firstIdx));
+            long newCurrValue = applyOp(op, currValue, prevValue);
             if (newFirstIdx == 1 + lastIdx) {
-                return currValue;
+                return newCurrValue;
             }
             char newOp = expr[newFirstIdx];
-            return calc(currValue, newOp, newFirstIdx + 1, lastIdx);
+            return calc(newCurrValue, newOp, newFirstIdx + 1, lastIdx);
         }
     }
 
-    private int findNextFirstIdx(int firstIdx, int lastIdx) {
+    private int findNextNonDigitIdx(int firstIdx, int lastIdx) {
         for (int i = firstIdx; i <= lastIdx; ++i) {
             if (!isDigit(expr[i])) {
                 return i;
@@ -82,13 +66,16 @@ class Calculator {
         throw new RuntimeException("Brackets mismatch");
     }
 
-    private static long applyOp(char op, long num1, long num2) {
+    private static long applyOp(char op, long value1, long value2) {
         switch (op) {
+            case NOOP -> {
+                return value1;
+            }
             case '+' -> {
-                return num1 + num2;
+                return value1 + value2;
             }
             case '*' -> {
-                return num1 * num2;
+                return value1 * value2;
             }
             default -> throw new RuntimeException("Unknown operator: " + op);
         }
@@ -102,7 +89,7 @@ class Calculator {
 public class PartOne {
     public static long calcMultiline(String multiline) {
         String[] lines = multiline.split("\n");
-        long sum  = 0;
+        long sum = 0;
         for (String line : lines) {
             line = normalize(line);
             if (line.isEmpty()) {
@@ -112,7 +99,6 @@ public class PartOne {
         }
         return sum;
     }
-
 
     public static long calc(String expr) {
         char[] normalizedExpr = normalize(expr).toCharArray();
