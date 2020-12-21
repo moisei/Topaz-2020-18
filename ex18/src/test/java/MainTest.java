@@ -36,8 +36,8 @@ public class MainTest {
         tst("(12)+(3)", 15);
     }
 
-    @Test
-    void tstEmbed() {
-        tst("((1))", 4);
-    }
+//    @Test
+//    void tstEmbed() {
+//        tst("((1))", 4);
+//    }
 }

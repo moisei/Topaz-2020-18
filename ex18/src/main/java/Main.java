@@ -6,8 +6,6 @@ public class Main {
     }
 
     // the valid expr can begin either with the ( or with the digit.
-    // if started with the digit then it's form is  is num [OP rightExpr]
-    // if started with the (     then it's form is  ( innerExpr ) [OP rightExpr]
     public static long calc(char[] expr, int firstIdx, int lastIdx) {
         if ('(' == expr[firstIdx]) {
             int innerLastIdx = -1 + getMatchingCloseBracketIdx(expr, firstIdx + 1, lastIdx);
@@ -19,18 +17,25 @@ public class Main {
             long rightExpr = calc(expr, innerLastIdx + 3, lastIdx);
             return applyOp(op, innerExpr, rightExpr);
         } else {
-            int newFirstIdx = firstIdx;
-            for (int i = firstIdx; i <= lastIdx && isDigit(expr[i]); ++i) {
-                newFirstIdx = i;
-            }
-            long num = Long.parseLong(new String(expr, firstIdx, newFirstIdx - firstIdx + 1));
-            if (newFirstIdx == lastIdx) {
+            int newFirstIdx = findNextFirstIdx(expr, firstIdx, lastIdx);
+            String numStr = new String(expr, firstIdx, newFirstIdx - firstIdx);
+            long num = Long.parseLong(numStr);
+            if (newFirstIdx == 1 + lastIdx) {
                 return num;
             }
-            char op = expr[newFirstIdx + 1];
-            long rightExpr = calc(expr, newFirstIdx + 2, lastIdx);
+            char op = expr[newFirstIdx];
+            long rightExpr = calc(expr, newFirstIdx + 1, lastIdx);
             return applyOp(op, num, rightExpr);
         }
+    }
+
+    private static int findNextFirstIdx(char[] expr, int firstIdx, int lastIdx) {
+        for (int i = firstIdx; i <= lastIdx; ++i) {
+            if (!isDigit(expr[i])) {
+                return i;
+            }
+        }
+        return lastIdx + 1;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
