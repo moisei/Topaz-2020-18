@@ -15,7 +15,7 @@ public class MainTest {
     }
 
     @Test
-    void tstDigitClose() {
+    void tstDigitBracket() {
         tst("(12)", 12);
         tst("(0)", 0);
     }
@@ -26,5 +26,18 @@ public class MainTest {
         tst("(1+12)", 13);
         tst("(12+123)", 135);
         tst("(123+98)", 221);
+    }
+
+    @Test
+    void tstBracketAndExpr() {
+        tst("(1)+(3)", 4);
+        tst("(1)+2", 3);
+        tst("(12)+3", 15);
+        tst("(12)+(3)", 15);
+    }
+
+    @Test
+    void tstEmbed() {
+        tst("((1))", 4);
     }
 }
