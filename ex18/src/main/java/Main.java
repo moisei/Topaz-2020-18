@@ -2,7 +2,8 @@
 
 public class Main {
     public static long calc(String expr) {
-        return calc(normalize(expr), 0, expr.length() - 1);
+        char[] normalizedExpr = normalize(expr);
+        return calc(normalizedExpr, 0, normalizedExpr.length - 1);
     }
 
     // the valid expr can begin either with the ( or with the digit.
@@ -79,7 +80,7 @@ public class Main {
     }
 
     private static char[] normalize(String expr) {
-        expr = expr.replace(" ", "");
+        expr = expr.replaceAll("\\s", "");
         return expr.toCharArray();
     }
 
