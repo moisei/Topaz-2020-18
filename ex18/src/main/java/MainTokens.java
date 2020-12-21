@@ -100,14 +100,27 @@ class Calculator {
 }
 
 public class MainTokens {
+    public static long calcMultiline(String multiline) {
+        String[] lines = multiline.split("\n");
+        long sum  = 0;
+        for (String line : lines) {
+            line = normalize(line);
+            if (line.isEmpty()) {
+                continue;
+            }
+            sum += new Calculator(line.toCharArray()).calc();
+        }
+        return sum;
+    }
+
+
     public static long calc(String expr) {
-        char[] normalizedExpr = normalize(expr);
+        char[] normalizedExpr = normalize(expr).toCharArray();
         return new Calculator(normalizedExpr).calc();
     }
 
-    private static char[] normalize(String expr) {
-        expr = expr.replaceAll("\\s", "");
-        return expr.toCharArray();
+    private static String normalize(String expr) {
+        return expr.replaceAll("\\s", "");
     }
 
 }
