@@ -99,7 +99,7 @@ class Calculator {
     }
 }
 
-public class MainTokens {
+public class PartOne {
     public static long calcMultiline(String multiline) {
         String[] lines = multiline.split("\n");
         long sum  = 0;

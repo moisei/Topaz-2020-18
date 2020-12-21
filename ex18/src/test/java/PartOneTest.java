@@ -2,9 +2,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MainTest {
+public class PartOneTest {
     private void tst(String s, int num) {
-        assertEquals(num, MainTokens.calc(s));
+        assertEquals(num, PartOne.calc(s));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class MainTest {
                 5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))
                 ((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2
                 """;
-        assertEquals(26 + 437 + 12240 + 13632, MainTokens.calcMultiline(str));
+        assertEquals(26 + 437 + 12240 + 13632, PartOne.calcMultiline(str));
     }
 
     @Test
@@ -454,6 +454,6 @@ public class MainTest {
                 6 + 4 + 8
                 3 * (5 + (2 * 6 * 5 + 7 * 6) + 7 * 2 * 8 * 8) + 8 * 4
                 8 * 7 * (3 * 4 + 6 + 2 * 9 + 9) * 3 + (3 + 5)""";
-        System.out.println(MainTokens.calcMultiline(str));
+        System.out.println(PartOne.calcMultiline(str));
     }
 }
