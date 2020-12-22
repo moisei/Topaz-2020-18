@@ -13,23 +13,29 @@ public class MainTest {
     @Test
     void tst() {
         Map<Set<String>, Set<String>> foods = initFoods();
-        getConfirmedAllergenIgredients(foods);
+        Map<String, String> confirmedAllergenIngredients = getConfirmedAllergenIngredients(foods);
+        System.out.println(foods);
+        System.out.println(confirmedAllergenIngredients);
+        foods.keySet().forEach(k -> k.removeAll(confirmedAllergenIngredients.values()));
+        System.out.println(foods.keySet());
+        long sum = foods.keySet().stream().mapToLong(Set::size).sum();
+        System.out.println(sum);
     }
 
-    private Map<String, String> getConfirmedAllergenIgredients(Map<Set<String>, Set<String>> foods) {
+    private Map<String, String> getConfirmedAllergenIngredients(Map<Set<String>, Set<String>> foods) {
         Map<String, Set<String>> allergenIngredients = new HashMap<>();
         for (Map.Entry<Set<String>, Set<String>> foodsEntry : foods.entrySet()) {
             foodsEntry.getValue().forEach(allergen -> addOrMerge(allergenIngredients, allergen, foodsEntry.getKey()));
         }
         Map<String, String> confirmedAllergenIngredients = new HashMap<>();
         while (true) {
-            System.out.println("************************");
-            System.out.println(allergenIngredients);
+//            System.out.println("************************");
+//            System.out.println(allergenIngredients);
             Set<String> confirmedAllergens = allergenIngredients.entrySet().stream()
                     .filter(e -> 1 == e.getValue().size())
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toSet());
-            System.out.println(confirmedAllergens);
+//            System.out.println(confirmedAllergens);
             if (confirmedAllergens.isEmpty()) {
                 break;
             }
@@ -41,12 +47,12 @@ public class MainTest {
                     ingredients.remove(confirmedFood);
                 }
             }
-            System.out.println(confirmedAllergenIngredients);
+//            System.out.println(confirmedAllergenIngredients);
         }
-        System.out.println("======================");
-        System.out.println(confirmedAllergenIngredients);
-        System.out.println("----------------------");
-        System.out.println(allergenIngredients);
+//        System.out.println("======================");
+//        System.out.println(confirmedAllergenIngredients);
+//        System.out.println("----------------------");
+//        System.out.println(allergenIngredients);
         return confirmedAllergenIngredients;
     }
 
@@ -65,10 +71,10 @@ public class MainTest {
 //        sqjhc fvjkl (contains soy)
 //        sqjhc mxmxvkd sbzzf (contains fish)
         Map<Set<String>, Set<String>> foods = new HashMap<>();
-        foods.put(Set.of("mxmxvkd", "kfcds", "sqjhc", "nhms"), Set.of("dairy", "fish"));
-        foods.put(Set.of("trh", "fvjkl", "sbzzf", "mxmxvkd"), Set.of("dairy"));
-        foods.put(Set.of("sqjhc", "fvjkl"), Set.of("soy"));
-        foods.put(Set.of("sqjhc", "mxmxvkd", "sbzzf"), Set.of("fish"));
+        foods.put(new HashSet<>(Set.of("mxmxvkd", "kfcds", "sqjhc", "nhms")), Set.of("dairy", "fish"));
+        foods.put(new HashSet<>(Set.of("trh", "fvjkl", "sbzzf", "mxmxvkd")), Set.of("dairy"));
+        foods.put(new HashSet<>(Set.of("sqjhc", "fvjkl")), Set.of("soy"));
+        foods.put(new HashSet<>(Set.of("sqjhc", "mxmxvkd", "sbzzf")), Set.of("fish"));
         return foods;
 
     }
