@@ -12,6 +12,7 @@ public class MainTest {
 
     @Test
     void tst() {
+//        Map<Set<String>, Set<String>> foods = initFoodsExample();
         Map<Set<String>, Set<String>> foods = initFoodsInp();
         Map<String, String> confirmedAllergenIngredients = getConfirmedAllergenIngredients(foods);
         System.out.println(foods);
@@ -20,6 +21,10 @@ public class MainTest {
         System.out.println(foods.keySet());
         long sum = foods.keySet().stream().mapToLong(Set::size).sum();
         System.out.println(sum);
+
+        String sortedValues = confirmedAllergenIngredients.keySet().stream().sorted().map(confirmedAllergenIngredients::get).collect(Collectors.joining(","));
+        System.out.println(sortedValues);
+
     }
 
     private Map<String, String> getConfirmedAllergenIngredients(Map<Set<String>, Set<String>> foods) {
