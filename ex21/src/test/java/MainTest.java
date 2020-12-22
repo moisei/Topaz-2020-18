@@ -12,7 +12,7 @@ public class MainTest {
 
     @Test
     void tst() {
-        Map<Set<String>, Set<String>> foods = initFoods();
+        Map<Set<String>, Set<String>> foods = initFoodsInp();
         Map<String, String> confirmedAllergenIngredients = getConfirmedAllergenIngredients(foods);
         System.out.println(foods);
         System.out.println(confirmedAllergenIngredients);
@@ -29,13 +29,10 @@ public class MainTest {
         }
         Map<String, String> confirmedAllergenIngredients = new HashMap<>();
         while (true) {
-//            System.out.println("************************");
-//            System.out.println(allergenIngredients);
             Set<String> confirmedAllergens = allergenIngredients.entrySet().stream()
                     .filter(e -> 1 == e.getValue().size())
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toSet());
-//            System.out.println(confirmedAllergens);
             if (confirmedAllergens.isEmpty()) {
                 break;
             }
@@ -47,12 +44,7 @@ public class MainTest {
                     ingredients.remove(confirmedFood);
                 }
             }
-//            System.out.println(confirmedAllergenIngredients);
         }
-//        System.out.println("======================");
-//        System.out.println(confirmedAllergenIngredients);
-//        System.out.println("----------------------");
-//        System.out.println(allergenIngredients);
         return confirmedAllergenIngredients;
     }
 
@@ -65,7 +57,7 @@ public class MainTest {
         }
     }
 
-    private Map<Set<String>, Set<String>> initFoods() {
+    private Map<Set<String>, Set<String>> initFoodsExample() {
 //        mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
 //        trh fvjkl sbzzf mxmxvkd (contains dairy)
 //        sqjhc fvjkl (contains soy)
@@ -75,6 +67,25 @@ public class MainTest {
         foods.put(new HashSet<>(Set.of("trh", "fvjkl", "sbzzf", "mxmxvkd")), Set.of("dairy"));
         foods.put(new HashSet<>(Set.of("sqjhc", "fvjkl")), Set.of("soy"));
         foods.put(new HashSet<>(Set.of("sqjhc", "mxmxvkd", "sbzzf")), Set.of("fish"));
+        return foods;
+
+    }
+
+    @Test
+    void name() {
+        System.out.println(initFoodsInp());
+    }
+
+    // cqvc vmkt sbvbzcg (contains fish, soy, nuts)
+    private Map<Set<String>, Set<String>> initFoodsInp() {
+        Map<Set<String>, Set<String>> foods = new HashMap<>();
+        for (String line : Inp.INP.split("\n")) {
+            String[] tokens = line.split("\\(");
+            Set<String> ingredients = new HashSet<>(Arrays.asList(tokens[0].trim().split(" ")));
+            String[] t1 = tokens[1].replace("contains", "").replace(" ", "").replace(")", "").split(",");
+            Set<String> allergens = new HashSet<>(Arrays.asList(t1));
+            foods.put(ingredients, allergens);
+        }
         return foods;
 
     }
