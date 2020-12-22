@@ -18,23 +18,23 @@ class Calculator {
     private long calc(long prevValue, char op, int firstIdx, int lastIdx) {
         if ('(' == expr[firstIdx]) {
             int innerLastIdx = -1 + findMatchingCloseBracketIdx(firstIdx + 1, lastIdx);
-            long currValue = calc(NOVALUE, NOOP, firstIdx + 1, innerLastIdx);
-            long newCurrValue = applyOp(op, currValue, prevValue);
-            if (innerLastIdx == lastIdx - 1) {
-                return newCurrValue;
-            }
-            char newOp = expr[innerLastIdx + 2];
-            return calc(newCurrValue, newOp, innerLastIdx + 3, lastIdx);
+            long value = applyOp(op, calc(NOVALUE, NOOP, firstIdx + 1, innerLastIdx), prevValue);
+            return ((innerLastIdx + 2) > lastIdx) ? value : calc(value, expr[innerLastIdx + 2], innerLastIdx + 3, lastIdx);
         } else {
-            int newFirstIdx = findNextNonDigitIdx(firstIdx, lastIdx);
-            long currValue = Long.parseLong(new String(expr, firstIdx, newFirstIdx - firstIdx));
-            long newCurrValue = applyOp(op, currValue, prevValue);
-            if (newFirstIdx == 1 + lastIdx) {
-                return newCurrValue;
-            }
-            char newOp = expr[newFirstIdx];
-            return calc(newCurrValue, newOp, newFirstIdx + 1, lastIdx);
+            int nextTokenIdx = findNextNonDigitIdx(firstIdx, lastIdx);
+            long value = applyOp(op, toLong(firstIdx, nextTokenIdx - firstIdx), prevValue);
+            return (nextTokenIdx > lastIdx) ? value : calc(value, expr[nextTokenIdx], nextTokenIdx + 1, lastIdx);
         }
+    }
+
+    private static long applyOp(char op, long value1, long value2) {
+        if (op == '+') return value1 + value2;
+        if (op == '*') return value1 * value2;
+        return value1; // NOOP
+    }
+
+    private long toLong(int firstIdx, int lastIdx) {
+        return Long.parseLong(new String(expr, firstIdx, lastIdx));
     }
 
     private int findNextNonDigitIdx(int firstIdx, int lastIdx) {
@@ -64,21 +64,6 @@ class Calculator {
             }
         }
         throw new RuntimeException("Brackets mismatch");
-    }
-
-    private static long applyOp(char op, long value1, long value2) {
-        switch (op) {
-            case NOOP -> {
-                return value1;
-            }
-            case '+' -> {
-                return value1 + value2;
-            }
-            case '*' -> {
-                return value1 * value2;
-            }
-            default -> throw new RuntimeException("Unknown operator: " + op);
-        }
     }
 
     private static boolean isDigit(char i) {

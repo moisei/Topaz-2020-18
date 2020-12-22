@@ -21,8 +21,8 @@ public class PartOneTest {
 
     @Test
     void tstDigitBracket() {
-        tst("(12)", 12);
         tst("(0)", 0);
+        tst("(12)", 12);
     }
 
     @Test
