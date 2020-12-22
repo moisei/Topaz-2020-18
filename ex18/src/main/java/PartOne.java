@@ -17,7 +17,7 @@ class Calculator {
 
     private long calc(long prevValue, char op, int firstIdx, int lastIdx) {
         if ('(' == expr[firstIdx]) {
-            int innerLastIdx = -1 + findMatchingCloseBracketIdx(firstIdx + 1, lastIdx);
+            int innerLastIdx = -1 + findMatchingCloseBraceIdx(firstIdx + 1, lastIdx);
             long value = applyOp(op, calc(NOVALUE, NOOP, firstIdx + 1, innerLastIdx), prevValue);
             return ((innerLastIdx + 2) > lastIdx) ? value : calc(value, expr[innerLastIdx + 2], innerLastIdx + 3, lastIdx);
         } else {
@@ -46,7 +46,7 @@ class Calculator {
         return lastIdx + 1;
     }
 
-    private int findMatchingCloseBracketIdx(int firstIdx, int lastIdx) {
+    private int findMatchingCloseBraceIdx(int firstIdx, int lastIdx) {
         int cnt = 1;
         for (int i = firstIdx; i <= lastIdx; ++i) {
             switch (expr[i]) {
@@ -63,7 +63,7 @@ class Calculator {
                     break;
             }
         }
-        throw new RuntimeException("Brackets mismatch");
+        throw new RuntimeException("Braces mismatch");
     }
 
     private static boolean isDigit(char i) {
